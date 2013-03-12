@@ -4,6 +4,9 @@ import re
 import os
 import ImageGrab
 import time
+import urllib
+import json
+import base64
 
 class PageOne(wx.Panel):
     def __init__(self, parent):
@@ -171,10 +174,47 @@ class PageTwo(wx.Panel):
 
 class PageThree(wx.Panel):
     def __init__(self, parent):
-        wx.Panel.__init__(self, parent,size=(600,700))
-        t = wx.StaticText(self, -1, "This is a PageThree object", (60,60))
+        wx.Panel.__init__(self, parent,pos=(0,0))
 
+        self.url = ''
+        self.InitUI()
 
+    def InitUI(self):
+        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
+        hbox3 = wx.BoxSizer(wx.HORIZONTAL)
+        vbox = wx.BoxSizer(wx.VERTICAL)
+
+        self.tc = wx.TextCtrl(self,value="http://svr.servers.xm.youxi.gigaget.com:8991/poptip?gameid=000047&pid=8C89A57230E488S1&tids=")
+        submit_button = wx.Button(self,label=u'提    交')
+        hbox1.Add(self.tc,2,flag=wx.RIGHT,border=8)
+        hbox1.Add(submit_button,0,flag=wx.LEFT,border=8)
+
+        vbox.Add(hbox1,flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP,border=10)
+
+        self.P_tc = wx.TextCtrl(self,style=wx.TE_MULTILINE|wx.TE_READONLY)
+        hbox3.Add(self.P_tc,proportion=1, flag=wx.EXPAND)
+        vbox.Add(hbox3,proportion=1,flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM,border=10)
+
+        self.SetSizer(vbox)
+
+        self.Bind(wx.EVT_TEXT,self.geturl,self.tc)
+        self.Bind(wx.EVT_BUTTON,self.submit,submit_button)
+
+    def geturl(self,event):
+        self.url = event.GetString()
+
+    def submit(self,event):
+         u = urllib.urlopen(self.url).read()
+         contents = json.loads(u)
+         temp = contents[0]['head']
+         str_temp = str(temp)
+         self.P_tc.AppendText("Head:"+base64.decodestring(str_temp).decode('utf-8').encode('gbk')+'\n')
+         self.P_tc.AppendText("Body:"+base64.decodestring(str(contents[0]['body'])).decode('utf-8').encode('gbk')+'\n')
+         self.P_tc.AppendText("Tail:"+base64.decodestring(str(contents[0]['tail'])).decode('utf-8').encode('gbk')+'\n')
+         self.P_tc.AppendText("Gameid:"+contents[0]['gameid']+'\n')
+         self.P_tc.AppendText("Tid:"+str(contents[0]['tid'])+'\n')
+         self.P_tc.AppendText("imageurl:"+contents[0]['imageUrl']+'\n')
+         self.P_tc.AppendText("----------------------------------------------"+'\n')
 class MainFrame(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, None, title="Job tools",size=(600,700))
@@ -191,7 +231,7 @@ class MainFrame(wx.Frame):
         # add the pages to the notebook with the label to show on the tab
         nb.AddPage(page1, "StatFilter")
         nb.AddPage(page2, "ScreenShot")
-        nb.AddPage(page3, "Page 3")
+        nb.AddPage(page3, "Request")
 
         # finally, put the notebook in a sizer for the panel to manage
         # the layout
