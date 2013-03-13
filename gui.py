@@ -208,9 +208,9 @@ class PageThree(wx.Panel):
          contents = json.loads(u)
          temp = contents[0]['head']
          str_temp = str(temp)
-         self.P_tc.AppendText("Head:"+base64.decodestring(str_temp).decode('utf-8').encode('gbk')+'\n')
-         self.P_tc.AppendText("Body:"+base64.decodestring(str(contents[0]['body'])).decode('utf-8').encode('gbk')+'\n')
-         self.P_tc.AppendText("Tail:"+base64.decodestring(str(contents[0]['tail'])).decode('utf-8').encode('gbk')+'\n')
+         self.P_tc.AppendText("Head:"+base64.decodestring(str_temp).decode('utf-8')+'\n')
+         self.P_tc.AppendText("Body:"+base64.decodestring(str(contents[0]['body'])).decode('utf-8')+'\n')
+         self.P_tc.AppendText("Tail:"+base64.decodestring(str(contents[0]['tail'])).decode('utf-8')+'\n')
          self.P_tc.AppendText("Gameid:"+contents[0]['gameid']+'\n')
          self.P_tc.AppendText("Tid:"+str(contents[0]['tid'])+'\n')
          self.P_tc.AppendText("imageurl:"+contents[0]['imageUrl']+'\n')
