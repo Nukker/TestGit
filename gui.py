@@ -204,17 +204,21 @@ class PageThree(wx.Panel):
         self.url = event.GetString()
 
     def submit(self,event):
-         u = urllib.urlopen(self.url).read()
-         contents = json.loads(u)
-         temp = contents[0]['head']
-         str_temp = str(temp)
-         self.P_tc.AppendText("Head:"+base64.decodestring(str_temp).decode('utf-8')+'\n')
-         self.P_tc.AppendText("Body:"+base64.decodestring(str(contents[0]['body'])).decode('utf-8')+'\n')
-         self.P_tc.AppendText("Tail:"+base64.decodestring(str(contents[0]['tail'])).decode('utf-8')+'\n')
-         self.P_tc.AppendText("Gameid:"+contents[0]['gameid']+'\n')
-         self.P_tc.AppendText("Tid:"+str(contents[0]['tid'])+'\n')
-         self.P_tc.AppendText("imageurl:"+contents[0]['imageUrl']+'\n')
-         self.P_tc.AppendText("----------------------------------------------"+'\n')
+        u = urllib.urlopen(self.url).read()
+        contents = json.loads(u)
+        if len(contents)>0:
+            temp = contents[0]['head']
+            str_temp = str(temp)
+            self.P_tc.AppendText("Head:"+base64.decodestring(str_temp).decode('utf-8')+'\n')
+            self.P_tc.AppendText("Body:"+base64.decodestring(str(contents[0]['body'])).decode('utf-8')+'\n')
+            self.P_tc.AppendText("Tail:"+base64.decodestring(str(contents[0]['tail'])).decode('utf-8')+'\n')
+            self.P_tc.AppendText("Gameid:"+contents[0]['gameid']+'\n')
+            self.P_tc.AppendText("Tid:"+str(contents[0]['tid'])+'\n')
+            self.P_tc.AppendText("imageurl:"+contents[0]['imageUrl']+'\n')
+            self.P_tc.AppendText("----------------------------------------------"+'\n')
+        else:
+            self.P_tc.AppendText(u"没有获取到配置"+'\n')         #好像Appendtext里的默认编码非utf-8，需要再指定
+            self.P_tc.AppendText("----------------------------------------------"+'\n')
 class MainFrame(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, None, title="Job tools",size=(600,700))
